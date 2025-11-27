@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include "AES-128-192-256.h"
 
 static const uint8_t sbox[] = {
   0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5,
@@ -476,11 +477,6 @@ static void SubWord(uint8_t *word)
 static const uint8_t rcon[] = {
   0x01, 0x02, 0x04, 0x08, 0x10,
   0x20, 0x40, 0x80, 0x1b, 0x36};
-
-typedef struct {
-  int nr;
-  uint8_t rk[240];
-} AesContext;
 
 int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
 {
