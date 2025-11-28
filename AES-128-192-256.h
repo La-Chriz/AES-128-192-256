@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 
+enum errors {
+  NO_ERROR,
+  INVALID_KEYSIZE_ERROR,
+  ARGUMENT_NULL_ERROR
+};
+
 typedef struct {
   int nr;
   uint8_t rk[240];
