@@ -604,6 +604,7 @@ int main(void)
   AesEncryptBlock(&ctx, pt, ct);
   AesDecryptBlock(&ctx, ct, dt);
 
+  printf("Roundkeys:\n");
   for(int i = 0; i < ctx.nr * 16; i++)
   {
     printf("%02X", ctx.rk[i]);
@@ -611,14 +612,17 @@ int main(void)
   }
   printf("\n");
 
+  printf("Plaintext block:\n");
   for(int i = 0; i < 16; i++)
     printf("%02X", pt[i]);
-  printf("\n");
+  printf("\n\n");
 
+  printf("Ciphertext block:\n");
   for(int i = 0; i < 16; i++)
     printf("%02X", ct[i]);
-  printf("\n");
+  printf("\n\n");
 
+  printf("Decrypted block:\n");
   for(int i = 0; i < 16; i++)
     printf("%02X", dt[i]);
   printf("\n");
