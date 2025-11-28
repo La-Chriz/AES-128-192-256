@@ -481,7 +481,7 @@ static const uint8_t rcon[] = {
 int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
 {
   if(ctx == NULL || key == NULL)
-    return -1;
+    return ARGUMENT_NULL_ERROR;
 
   if(keyLen == 16)
     ctx->nr = 11;
@@ -490,7 +490,7 @@ int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
   else if(keyLen == 32)
     ctx->nr = 15;
   else
-    return 1;
+    return INVALID_KEYSIZE_ERROR;
 
   int N = keyLen / 4;
   uint8_t word[4];
@@ -551,7 +551,7 @@ int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
         ctx->rk[(i - N) * 4 + 3] ^ word[3];
     }
   }
-  return 0;
+  return NO_ERROR;
 }
 
 void AesEncryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out)
