@@ -592,7 +592,7 @@ void AesDecryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out)
 
 int main(void)
 {
-  // Erwartetes Ergebnis:
+  // Expected ct:
   // 66E94BD4EF8A2C3B884CFA59CA342B2E
   uint8_t key[16] = {0};
   uint8_t  pt[16] = {0};
