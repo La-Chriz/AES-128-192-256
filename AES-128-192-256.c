@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stddef.h>
 #include "AES-128-192-256.h"
 
 static const uint8_t sbox[] = {
