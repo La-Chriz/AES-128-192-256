@@ -475,6 +475,12 @@ static void SubWord(uint8_t *word)
   word[3] = sbox[word[3]];
 }
 
+void MemCopy(uint8_t *a, const uint8_t *b, size_t l)
+{
+  for(size_t i = 0; i < l; i++)
+    a[i] = b[i];
+}
+
 static const uint8_t rcon[] = {
   0x01, 0x02, 0x04, 0x08, 0x10,
   0x20, 0x40, 0x80, 0x1b, 0x36};
@@ -496,62 +502,27 @@ int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
   int N = keyLen / 4;
   uint8_t word[4];
 
-  for(int i = 0; i < 4 * ctx->nr; i++)
+  MemCopy(ctx->rk, key, keyLen);
+  for(int i = N; i < 4 * ctx->nr; i++)
   {
-    if(i < N)
+    MemCopy(word, &ctx->rk[(i - 1) * 4], 4);
+    if(i >= N && i % N == 0)
     {
-      ctx->rk[i * 4 + 0] = key[i * 4 + 0];
-      ctx->rk[i * 4 + 1] = key[i * 4 + 1];
-      ctx->rk[i * 4 + 2] = key[i * 4 + 2];
-      ctx->rk[i * 4 + 3] = key[i * 4 + 3];
-    } else if(i >= N && i % N == 0)
-    {
-      word[0] = ctx->rk[(i - 1) * 4 + 0];
-      word[1] = ctx->rk[(i - 1) * 4 + 1];
-      word[2] = ctx->rk[(i - 1) * 4 + 2];
-      word[3] = ctx->rk[(i - 1) * 4 + 3];
       RotWord(word);
       SubWord(word);
       word[0] ^= rcon[(i / N) - 1];
-      ctx->rk[i * 4 + 0] =
-        ctx->rk[(i - N) * 4 + 0] ^ word[0];
-      ctx->rk[i * 4 + 1] =
-        ctx->rk[(i - N) * 4 + 1] ^ word[1];
-      ctx->rk[i * 4 + 2] =
-        ctx->rk[(i - N) * 4 + 2] ^ word[2];
-      ctx->rk[i * 4 + 3] =
-        ctx->rk[(i - N) * 4 + 3] ^ word[3];
-    } else if(N >= 6 && i % N == 4)
-    {
-      word[0] = ctx->rk[(i - 1) * 4 + 0];
-      word[1] = ctx->rk[(i - 1) * 4 + 1];
-      word[2] = ctx->rk[(i - 1) * 4 + 2];
-      word[3] = ctx->rk[(i - 1) * 4 + 3];
-      SubWord(word);
-      ctx->rk[i * 4 + 0] =
-        ctx->rk[(i - N) * 4 + 0] ^ word[0];
-      ctx->rk[i * 4 + 1] =
-        ctx->rk[(i - N) * 4 + 1] ^ word[1];
-      ctx->rk[i * 4 + 2] =
-        ctx->rk[(i - N) * 4 + 2] ^ word[2];
-      ctx->rk[i * 4 + 3] =
-        ctx->rk[(i - N) * 4 + 3] ^ word[3];
-    } else
-    {
-      word[0] = ctx->rk[(i - 1) * 4 + 0];
-      word[1] = ctx->rk[(i - 1) * 4 + 1];
-      word[2] = ctx->rk[(i - 1) * 4 + 2];
-      word[3] = ctx->rk[(i - 1) * 4 + 3];
-      ctx->rk[i * 4 + 0] =
-        ctx->rk[(i - N) * 4 + 0] ^ word[0];
-      ctx->rk[i * 4 + 1] =
-        ctx->rk[(i - N) * 4 + 1] ^ word[1];
-      ctx->rk[i * 4 + 2] =
-        ctx->rk[(i - N) * 4 + 2] ^ word[2];
-      ctx->rk[i * 4 + 3] =
-        ctx->rk[(i - N) * 4 + 3] ^ word[3];
     }
+
+    if(N >= 6 && i % N == 4)
+      SubWord(word);
+
+    MemCopy(&ctx->rk[i * 4], &ctx->rk[(i - N) * 4], 4);
+    ctx->rk[i * 4 + 0] ^= word[0];
+    ctx->rk[i * 4 + 1] ^= word[1];
+    ctx->rk[i * 4 + 2] ^= word[2];
+    ctx->rk[i * 4 + 3] ^= word[3];
   }
+
   return NO_ERROR;
 }
 
