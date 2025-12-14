@@ -491,11 +491,11 @@ int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
     return ARGUMENT_NULL_ERROR;
 
   if(keyLen == 16)
-    ctx->nr = 11;
+    ctx->nr = 10;
   else if(keyLen == 24)
-    ctx->nr = 13;
+    ctx->nr = 12;
   else if(keyLen == 32)
-    ctx->nr = 15;
+    ctx->nr = 14;
   else
     return INVALID_KEYSIZE_ERROR;
 
@@ -506,7 +506,7 @@ int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
   for(int i = N; i < 4 * ctx->nr; i++)
   {
     MemCopy(word, &ctx->rk[(i - 1) * 4], 4);
-    if(i >= N && i % N == 0)
+    if(i % N == 0)
     {
       RotWord(word);
       SubWord(word);
@@ -532,7 +532,7 @@ void AesEncryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out)
     out[i] = in[i];
 
   AddRoundKey(out, &ctx->rk[0]);
-  for(int i = 1; i < ctx->nr - 1; i++)
+  for(int i = 1; i < ctx->nr; i++)
   {
     SubState(out);
     ShiftRows(out);
@@ -541,7 +541,7 @@ void AesEncryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out)
   }
   SubState(out);
   ShiftRows(out);
-  AddRoundKey(out, &ctx->rk[(ctx->nr - 1) * 16]);
+  AddRoundKey(out, &ctx->rk[ctx->nr * 16]);
 }
 
 void AesDecryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out)
@@ -549,8 +549,8 @@ void AesDecryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out)
   for(int i = 0; i < 16; i++)
     out[i] = in[i];
 
-  AddRoundKey(out, &ctx->rk[(ctx->nr - 1) * 16]);
-  for(int i = ctx->nr - 2; i >= 1; i--)
+  AddRoundKey(out, &ctx->rk[ctx->nr * 16]);
+  for(int i = ctx->nr - 1; i >= 1; i--)
   {
     InvShiftRows(out);
     InvSubState(out);
