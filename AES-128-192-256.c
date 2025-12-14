@@ -503,7 +503,7 @@ int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
   uint8_t word[4];
 
   MemCopy(ctx->rk, key, keyLen);
-  for(int i = N; i < 4 * ctx->nr; i++)
+  for(int i = N; i < 4 * (ctx->nr + 1); i++)
   {
     MemCopy(word, &ctx->rk[(i - 1) * 4], 4);
     if(i % N == 0)
