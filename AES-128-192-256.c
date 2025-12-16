@@ -513,7 +513,7 @@ int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
       word[0] ^= rcon[(i / N) - 1];
     }
 
-    if(N >= 6 && i % N == 4)
+    if(N > 6 && i % N == 4)
       SubWord(word);
 
     MemCopy(&ctx->rk[i * 4], &ctx->rk[(i - N) * 4], 4);
