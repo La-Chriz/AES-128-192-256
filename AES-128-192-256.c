@@ -526,7 +526,7 @@ int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen)
   return NO_ERROR;
 }
 
-void AesEncryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out)
+void AesEncryptBlock(const AesContext *ctx, const uint8_t *in, uint8_t *out)
 {
   for(int i = 0; i < 16; i++)
     out[i] = in[i];
@@ -544,7 +544,7 @@ void AesEncryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out)
   AddRoundKey(out, &ctx->rk[ctx->nr * 16]);
 }
 
-void AesDecryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out)
+void AesDecryptBlock(const AesContext *ctx, const uint8_t *in, uint8_t *out)
 {
   for(int i = 0; i < 16; i++)
     out[i] = in[i];
