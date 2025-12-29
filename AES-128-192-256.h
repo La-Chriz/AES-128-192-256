@@ -16,8 +16,8 @@ typedef struct {
 
 int AesInit(AesContext *ctx, const uint8_t *key, size_t keyLen);
 
-void AesEncryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out);
+void AesEncryptBlock(const AesContext *ctx, const uint8_t *in, uint8_t *out);
 
-void AesDecryptBlock(AesContext *ctx, const uint8_t *in, uint8_t *out);
+void AesDecryptBlock(const AesContext *ctx, const uint8_t *in, uint8_t *out);
 
 #endif
